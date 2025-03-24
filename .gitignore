@@ -1,0 +1,16 @@
+# os
+.DS_Store
+.idea/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+/node_modules
+/design
+/public
+/production
+/build
+/dist
+
+package-lock.json
