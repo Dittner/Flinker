@@ -10,10 +10,10 @@
     "declarationDir": "./dist",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false, //set true to run jest
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "noEmit": true,
+    "noEmit": false, //set true to run jest
   },
   "include": [
     "src/rx"

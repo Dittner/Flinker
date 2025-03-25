@@ -1,6 +1,6 @@
 import {describe, expect, test} from '@jest/globals'
-import {RXSubject} from '../../src/rx/RXPublisher.js'
-import {asyncDelay} from '../../src/rx/Utils.js'
+import {RXSubject} from '../../src/rx/RXPublisher.ts'
+import {asyncDelay} from '../../src/rx/Utils.ts'
 
 describe('RXSubject Module', () => {
   test('0. default state', () => {

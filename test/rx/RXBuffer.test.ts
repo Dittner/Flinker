@@ -1,5 +1,5 @@
 import {describe, expect, test} from '@jest/globals'
-import {RXBuffer} from '../../src/rx/RXPublisher.js'
+import {RXBuffer} from '../../src/rx/RXPublisher.ts'
 
 describe('RXBuffer Module', () => {
   test('0. buffer', async() => {

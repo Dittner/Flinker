@@ -12,13 +12,6 @@ import {
   RXWaitUntilComplete
 } from './RXPublisher.js'
 
-export const generateSUID = (() => {
-  let value = 0
-  return (): number => {
-    return value++
-  }
-})()
-
 export type RXObjectType = 'operator' | 'observable' | 'pipeline' | 'object'
 
 export interface RXObject {

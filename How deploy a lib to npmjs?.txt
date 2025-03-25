@@ -1,5 +1,6 @@
 How deploy a lib to https://docs.npmjs.com
 
+0. Before creating new package check: package-name does not exist in the npm store
 1. Run a build
 $ npm run build
 

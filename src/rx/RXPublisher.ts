@@ -1,6 +1,6 @@
 import {type RXAnyOperatorProtocol, type RXOperatorProtocol} from './RXOperator.js'
 import {type RXAnyPipeline, RXPipeline} from './RXPipeline'
-import {generateSUID, type RXObject, type RXObjectType} from './RX'
+import {type RXObject, type RXObjectType} from './RX'
 
 //--------------------------------------
 //  RXObservable
@@ -30,6 +30,13 @@ export interface RXObservable<V, E> extends RXObject {
 //     Logger.i('GC: disposed pipelines:', disposedCount + '/' + this.total)
 //   }
 // }
+
+const generateSUID = (() => {
+  let value = 0
+  return (): number => {
+    return value++
+  }
+})()
 
 //--------------------------------------
 //  RXPublisher

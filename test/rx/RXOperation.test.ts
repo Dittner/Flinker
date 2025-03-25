@@ -6,9 +6,9 @@ import {
   RXObservableValue,
   RXOperation,
   RXSubject
-} from '../../src/rx/RXPublisher.js'
-import {RX} from '../../src/rx/RX.js'
-import {asyncDelay} from '../../src/rx/Utils.js'
+} from '../../src/rx/RXPublisher.ts'
+import {RX} from '../../src/rx/RX.ts'
+import {asyncDelay} from '../../src/rx/Utils.ts'
 
 describe('RxOperation Module', () => {
   test('0. default state', () => {
@@ -857,5 +857,66 @@ describe('RxOperation Module', () => {
       .onComplete(() => buffer2 += 'c')
       .subscribe()
     expect(buffer2).toBe('ec')
+  })
+
+  test('24. forEach', async() => {
+    const op = RX.from([0, 1, 2, 3])
+    expect(op.isComplete).toBe(true)
+
+    let buffer1 = ''
+    op.pipe()
+      .forEach(v => { return RX.delayedComplete(10, v * v) })
+      .onReceive(v => buffer1 += v + '-')
+      .onComplete(() => buffer1 += 'c')
+      .subscribe()
+    expect(buffer1).toBe('')
+
+    await asyncDelay(50)
+
+    expect(buffer1).toBe('0-1-4-9-c')
+
+    let buffer2 = ''
+    op.pipe()
+      .forEach(v => { return RX.delayedComplete(10, v * v) })
+      .onReceive(v => buffer2 += v + '-')
+      .onComplete(() => buffer2 += 'c')
+      .subscribe()
+    expect(buffer2).toBe('')
+
+    await asyncDelay(50)
+
+    expect(buffer2).toBe('0-1-4-9-c')
+  })
+
+  test('25. forEach with error', async() => {
+    const op = RX.from([0, 1, 2, 3])
+    expect(op.isComplete).toBe(true)
+
+    let buffer1 = ''
+    op.pipe()
+      .forEach(v => { return v === 2 ? RX.delayedError(10, 'e') : RX.delayedComplete(10, v * v) })
+      .onReceive(v => buffer1 += v + '-')
+      .onError(e => buffer1 += e + '-')
+      .onComplete(() => buffer1 += 'c')
+      .subscribe()
+    expect(buffer1).toBe('')
+
+    await asyncDelay(50)
+
+    expect(buffer1).toBe('0-1-e-9-c')
+
+    let buffer2 = ''
+    op.pipe()
+      .filter(v => v % 2 === 1)
+      .forEach(v => { return v === 2 ? RX.delayedError(10, 'e') : RX.delayedComplete(10, v * v) })
+      .onReceive(v => buffer2 += v + '-')
+      .onError(e => buffer2 += e + '-')
+      .onComplete(() => buffer2 += 'c')
+      .subscribe()
+    expect(buffer2).toBe('')
+
+    await asyncDelay(50)
+
+    expect(buffer2).toBe('1-9-c')
   })
 })

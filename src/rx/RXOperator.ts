@@ -13,6 +13,7 @@ export interface RXOperatorProtocol<V, E> extends RXObject {
   debounce(ms: number): RXOperatorProtocol<V, E>
   map<T>(f: (v: V) => T): RXOperatorProtocol<T, E>
   flatMap<T>(f: (v: V) => RXObservable<T, E>): RXOperatorProtocol<T, E>
+  forEach<T>(f: (v: V) => RXObservable<T, E>): RXOperatorProtocol<T, E>
   sequent<T>(f: (v: V) => RXObservable<T, E>): RXOperatorProtocol<T, E>
   parallel<T>(f: (v: V) => RXObservable<T, E>): RXOperatorProtocol<T, E>
   filter(predicate: (v: V) => boolean): RXOperatorProtocol<V, E>
@@ -95,6 +96,10 @@ export class RXOperator<V, E> implements RXOperatorProtocol<V, E>, RXSender<V, E
 
   flatMap<T>(f: (v: V) => RXObservable<T, E>): RXOperator<T, E> {
     return this.addChild(new RXFlatMap<T, E>(this.pipeline, f))
+  }
+
+  forEach<T>(f: (v: V) => RXObservable<T, E>): RXOperator<T, E> {
+    return this.addChild(new RXForEach<T, E>(this.pipeline, f))
   }
 
   sequent<T>(f: (v: V) => RXObservable<T, E>): RXOperator<T, E> {
@@ -195,6 +200,72 @@ export class RXFlatMap<V, E> extends RXOperator<V, E> {
         this.sendError(e, broadcast)
       })
       .subscribe()
+  }
+}
+
+//--------------------------------------
+//  RXForEach
+//--------------------------------------
+interface RXForEachNotification {
+  hasError: boolean
+  value?: any
+  error?: any
+  broadcast: boolean
+}
+
+export class RXForEach<V, E> extends RXOperator<V, E> {
+  protected mapper: (value: any) => RXObservable<V, E>
+  private readonly buffer = Array<RXForEachNotification>()
+  private willComplete = false
+  private willCompleteBroadcast = false
+
+  constructor(pipe: RXAnyPipeline, mapper: (value: any) => RXObservable<V, E>) {
+    super(pipe)
+    this.mapper = mapper
+  }
+
+  override send(value: any, broadcast: boolean) {
+    this.buffer.push({hasError: false, value, broadcast})
+    this.processNext()
+  }
+
+  override sendError(error: E, broadcast: boolean) {
+    this.buffer.push({hasError: true, error, broadcast})
+    this.processNext()
+  }
+
+  override sendComplete(broadcast: boolean) {
+    this.willComplete = true
+    this.willCompleteBroadcast ||= broadcast
+    this.processNext()
+  }
+
+  private curOp: RXObservable<V, E> = new RXJustComplete()
+  private processNext() {
+    if (!this.curOp.isComplete) return
+
+    const notification = this.buffer.shift()
+    if (notification) {
+      if (notification.hasError) {
+        super.sendError(notification.error, notification.broadcast)
+        this.processNext()
+      } else if (notification.value !== undefined) {
+        this.curOp = this.mapper(notification.value)
+        this.curOp.pipe()
+          .onReceive(v => {
+            super.send(v, notification.broadcast)
+          })
+          .onError((e: any) => {
+            super.sendError(e, notification.broadcast)
+          })
+          .onComplete(() => { this.processNext() })
+          .subscribe()
+      } else {
+        this.processNext()
+      }
+    } else {
+      if (this.willComplete) super.sendComplete(this.willCompleteBroadcast)
+    }
   }
 }
 

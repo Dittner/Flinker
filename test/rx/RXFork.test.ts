@@ -1,6 +1,6 @@
 import {describe, expect, test} from '@jest/globals'
-import {RXEmitter, RXOperation, RXSubject} from '../../src/rx/RXPublisher.js'
-import {asyncDelay} from '../../src/rx/Utils.js'
+import {RXEmitter, RXOperation, RXSubject} from '../../src/rx/RXPublisher.ts'
+import {asyncDelay} from '../../src/rx/Utils.ts'
 
 describe('RX FORK', () => {
   test('1. fork and RXSubject', () => {

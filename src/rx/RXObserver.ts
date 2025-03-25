@@ -1,4 +1,3 @@
-import type React from 'react'
 import {useLayoutEffect, useRef, useState} from 'react'
 import {type AnyRXObservable, type RXObservable, type RXPublisherUID} from './RXPublisher.js'
 
