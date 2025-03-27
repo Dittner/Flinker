@@ -11,7 +11,7 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": false, //set true to run jest
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "noEmit": false, //set true to run jest
   },

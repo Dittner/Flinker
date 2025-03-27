@@ -4,3 +4,4 @@ export { observe, observeFrom, observer, JSXSubscriber, ObservableGlobalState, R
 export { RXOperatorProtocol, RXAnyOperator, RXOperator, RXMap, RXFlatMap, RXForEach, RXSequent, RXParallel, RXFilter, RXSpread, RXSkipFirst, RXSkipNullable, RXRemoveDuplicates, RXDebounce, RXReplaceError, } from "./RXOperator.js";
 export { RXAnyPipeline, RXPipeline } from "./RXPipeline.js";
 export { ErrorMethod, CompleteMethod, SubscribeMethod, RXAnySubscriber, RXSubscriber } from "./RXSubscriber.js";
+export {MD5, asyncDelay} from "./Utils.js";
