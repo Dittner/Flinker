@@ -1,6 +1,6 @@
 # Install
 ```cli
-npm i funkel.ts
+npm i flinker
 ```
 
 # License

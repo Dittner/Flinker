@@ -1,23 +1,22 @@
 {
-  "name": "funkel.ts",
+  "name": "flinker",
   "description": "RX lib for building frontend apps",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dittner/Funkel.git"
+    "url": "git+https://github.com/Dittner/Flinker.git"
   },
   "keywords": [
     "RX.ts",
-    "Funkel",
     "React",
     "App state manager"
   ],
   "author": "Alexander Dittner",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Dittner/Funkel/issues"
+    "url": "https://github.com/Dittner/Flinker/issues"
   },
-  "homepage": "https://github.com/Dittner/Funkel",
+  "homepage": "https://github.com/Dittner/Flinker",
   "private": false,
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
