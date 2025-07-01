@@ -1,4 +1,4 @@
-import {type RXAnyOperatorProtocol} from './RXOperator.js'
+import { type RXAnyOperatorProtocol } from './RXOperator'
 import {
   type AnyRXObservable,
   RXCombine,
@@ -10,7 +10,7 @@ import {
   type RXObservable,
   RXQueue,
   RXWaitUntilComplete
-} from './RXPublisher.js'
+} from './RXPublisher'
 
 export type RXObjectType = 'operator' | 'observable' | 'pipeline' | 'object'
 

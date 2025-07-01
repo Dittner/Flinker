@@ -6,9 +6,9 @@ import {
   RXObservableValue,
   RXOperation,
   RXSubject
-} from '../../src/rx/RXPublisher.ts'
-import {RX} from '../../src/rx/RX.ts'
-import {asyncDelay} from '../../src/rx/Utils.ts'
+} from '../../src/rx/RXPublisher'
+import {RX} from '../../src/rx/RX'
+import {asyncDelay} from '../../src/rx/Utils'
 
 describe('RxOperation Module', () => {
   test('0. default state', () => {

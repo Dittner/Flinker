@@ -1,5 +1,5 @@
-import type {RXSender} from './RX.ts'
-import {type RXAnyPipeline} from './RXPipeline.js'
+import type {RXSender} from './RX'
+import {type RXAnyPipeline} from './RXPipeline'
 
 //--------------------------------------
 //  Subscribe Methods

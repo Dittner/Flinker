@@ -1,6 +1,6 @@
-import {type RXPublisher} from './RXPublisher.js'
-import {RXOperator, type RXOperatorProtocol} from './RXOperator.js'
-import {type RXObject, type RXObjectType, type RXSender} from './RX.js'
+import {type RXPublisher} from './RXPublisher'
+import {RXOperator, type RXOperatorProtocol} from './RXOperator'
+import {type RXObject, type RXObjectType, type RXSender} from './RX'
 
 //--------------------------------------
 //  RXPipeline

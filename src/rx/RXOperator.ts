@@ -1,7 +1,7 @@
-import {RXEmitter, RXJustComplete, type RXObservable} from './RXPublisher.js'
+import {RXEmitter, RXJustComplete, type RXObservable} from './RXPublisher'
 import {type RXAnyPipeline, type RXPipeline} from './RXPipeline'
-import {type CompleteMethod, type ErrorMethod, RXSubscriber, type SubscribeMethod} from './RXSubscriber.js'
-import {type RXAnySender, type RXObject, type RXObjectType, type RXSender} from './RX.js'
+import {type CompleteMethod, type ErrorMethod, RXSubscriber, type SubscribeMethod} from './RXSubscriber'
+import {type RXAnySender, type RXObject, type RXObjectType, type RXSender} from './RX'
 
 //--------------------------------------
 //  RXOperatorProtocol

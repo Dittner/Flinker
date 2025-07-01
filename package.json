@@ -1,15 +1,13 @@
 {
   "name": "flinker",
-  "description": "RX lib for building frontend apps",
-  "version": "1.0.0",
+  "description": "RX.ts lib for building frontend apps",
+  "version": "2.0.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dittner/Flinker.git"
   },
   "keywords": [
-    "RX.ts",
-    "React",
-    "App state manager"
+    "RX.ts"
   ],
   "author": "Alexander Dittner",
   "license": "MIT",
@@ -20,7 +18,7 @@
   "private": false,
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist/",
     "index.ts",
@@ -30,8 +28,8 @@
   "scripts": {
     "demo": "PORT=3001 PUBLIC_URL=/ react-scripts start",
     "test": "jest",
-    "build": "rm -rf dist && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc --module es2015 --target es5 --outDir dist/esm",
+    "build": "rm -rf dist && npm run build:esm",
+    "build:esm": "tsc --module es2020 --target es2020 --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs"
   },
   "eslintConfig": {
@@ -64,9 +62,7 @@
     "ts-jest": "^29.3.0",
     "typescript": "^5.8.2",
     "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@types/react-dom": "^19.0.4"
   },
   "directories": {
     "test": "test"

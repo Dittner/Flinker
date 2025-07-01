@@ -1,4 +1,4 @@
-import {type RXAnyOperatorProtocol, type RXOperatorProtocol} from './RXOperator.js'
+import {type RXAnyOperatorProtocol, type RXOperatorProtocol} from './RXOperator'
 import {type RXAnyPipeline, RXPipeline} from './RXPipeline'
 import {type RXObject, type RXObjectType} from './RX'
 
@@ -209,7 +209,6 @@ export class RXEmitter<V, E> extends RXPublisher<V, E> {
   get err(): E | undefined { return this._err }
 
   constructor() {
-    console.log('new RXEmitter')
     super()
   }
 
@@ -382,7 +381,6 @@ export class RXCombine extends RXPublisher<any[], any> {
   get err(): any | undefined { return this._err }
 
   constructor(list: Array<AnyRXObservable | RXAnyOperatorProtocol>) {
-    console.log('new RXCombine')
     super()
     let count = list.length
     this._values = new Array(list.length).fill(undefined)
@@ -425,7 +423,6 @@ export class RXCombine extends RXPublisher<any[], any> {
 export class RXFrom<V, E> extends RXPublisher<V, E> {
   readonly values: V[]
   constructor(list: V[]) {
-    console.log('new RXFrom')
     super()
     this.values = list
     this.sendComplete()
@@ -453,7 +450,6 @@ export class RXWaitUntilComplete<V, E> extends RXPublisher<V, E> {
   get err(): any | undefined { return this._err }
 
   constructor(list: AnyRXObservable[] | AnyRXObservable, resultPublisher?: RXObservable<V, E>) {
-    console.log('new RXSequence')
     super()
     this._resultPublisher = resultPublisher
     let count = Array.isArray(list) ? list.length : 1
