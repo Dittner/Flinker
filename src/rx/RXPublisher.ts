@@ -2,50 +2,31 @@ import {type RXAnyOperatorProtocol, type RXOperatorProtocol} from './RXOperator'
 import {type RXAnyPipeline, RXPipeline} from './RXPipeline'
 import {type RXObject, type RXObjectType} from './RX'
 
-//--------------------------------------
-//  RXObservable
-//--------------------------------------
-export type AnyRXObservable = RXObservable<any, any>
-
-export interface RXObservable<V, E> extends RXObject {
-  suid: RXPublisherUID
-  isComplete: boolean
-  pipe(): RXOperatorProtocol<V, E>
-}
-
-//WeakRef is not supported in RN
-// export class RXPipelineGarbage {
-//   static self = new RXPipelineGarbage()
-//   private readonly list = Array<WeakRef<RXAnyPipeline>>()
-//   private total = 0
-//
-//   register(p: RXAnyPipeline) {
-//     this.list.push(new WeakRef(p))
-//     this.total++
-//     this.log()
-//   }
-//
-//   log() {
-//     const disposedCount = this.list.reduce((res, ref) => ref.deref() ? res + 1 : res, 0)
-//     Logger.i('GC: disposed pipelines:', disposedCount + '/' + this.total)
-//   }
-// }
-
+export type SessionUID = number
 const generateSUID = (() => {
   let value = 0
-  return (): number => {
+  return (): SessionUID => {
     return value++
   }
 })()
 
 //--------------------------------------
+//  RXObservable
+//--------------------------------------
+export type AnyRXObservable = RXObservable<any, any>
+export interface RXObservable<V, E> extends RXObject {
+  suid: SessionUID
+  isComplete: boolean
+  pipe(): RXOperatorProtocol<V, E>
+}
+
+//--------------------------------------
 //  RXPublisher
 //--------------------------------------
-export type RXPublisherUID = number
 export type RXAnyPublisher = RXPublisher<any, any>
 
 export class RXPublisher<V, E> implements RXObservable<V, E> {
-  readonly suid: RXPublisherUID = generateSUID()
+  readonly suid = generateSUID()
   readonly type: RXObjectType = 'observable'
 
   protected readonly pipelines: RXAnyPipeline[]
@@ -63,7 +44,6 @@ export class RXPublisher<V, E> implements RXObservable<V, E> {
   pipe(): RXOperatorProtocol<V, E> {
     const pipe = new RXPipeline<V, E>(this)
     this.pipelines.push(pipe)
-    //RXPipelineGarbage.self.register(pipe)
     return pipe.asOperator
   }
 
@@ -564,87 +544,6 @@ export class RXObservableValue<V> extends RXPublisher<V, any> {
     this.isComplete && p.sendComplete(false)
   }
 }
-
-//--------------------------------------
-//  RXQueue
-//--------------------------------------
-
-// export class RXQueue<V, E> {
-//   private readonly queue: Array<() => AnyRXObservable> = []
-//   private readonly op: RXOperation<V, E>
-//
-//   constructor() {
-//     this.op = new RXOperation<V, E>()
-//   }
-//
-//   //--------------------------------------
-//   //  asPublisher
-//   //--------------------------------------
-//   get asObservable(): RXObservable<V, E> { return this.op.asObservable }
-//
-//   next(fn: () => AnyRXObservable): this {
-//     if (this.op.isComplete) throw new Error('RXQueue.next operator not allowed: the queue is complete')
-//     this.queue.push(fn)
-//     this.executeNext()
-//     return this
-//   }
-//
-//   private isExecuting = false
-//   private executeNext() {
-//     if (this.op.isComplete || this.isExecuting) return
-//
-//     const fn = this.queue.shift()
-//     if (fn) {
-//       this.isExecuting = true
-//       const rx = fn()
-//       rx.pipe()
-//         .onError(e => {
-//           this.fail(e)
-//         })
-//         .onComplete(() => {
-//           this.isExecuting = false
-//           this.executeNext()
-//         })
-//         .subscribe()
-//     } else if (this.queue.length > 0) {
-//       this.executeNext()
-//     }
-//   }
-//
-//   success(v: V) {
-//     this.op.success(v)
-//   }
-//
-//   fail(e: E) {
-//     this.op.fail(e)
-//   }
-// }
-
-//--------------------------------------
-//  RXObservableSender
-//--------------------------------------
-
-// export class RXObservableSender<V> extends RXPublisher<V, any> {
-//   private _value: V
-//   get value(): V { return this._value }
-//   set value(v: V) {
-//     if (v !== this._value) {
-//       this._value = v
-//     }
-//   }
-//
-//   override send(value: V) {
-//     if (this._value !== value) {
-//       this._value = value
-//       super.send(value)
-//     }
-//   }
-//
-//   constructor(value: V) {
-//     super()
-//     this._value = value
-//   }
-// }
 
 //--------------------------------------
 //  RXQueue

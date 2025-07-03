@@ -1,7 +1,7 @@
 {
   "name": "flinker",
   "description": "RX.ts lib for building frontend apps",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dittner/Flinker.git"
@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/Dittner/Flinker",
   "private": false,
-  "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -33,10 +32,6 @@
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -52,7 +47,6 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.13",
@@ -60,9 +54,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.3.0",
-    "typescript": "^5.8.2",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4"
+    "typescript": "^5.8.2"
   },
   "directories": {
     "test": "test"

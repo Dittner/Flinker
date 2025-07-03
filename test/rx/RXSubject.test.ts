@@ -1,6 +1,6 @@
-import {describe, expect, test} from '@jest/globals'
-import {RXSubject} from '../../src/rx/RXPublisher'
-import {asyncDelay} from '../../src/rx/Utils'
+import { describe, expect, test } from '@jest/globals'
+import { RXEmitter, RXSubject } from '../../src/rx/RXPublisher'
+import { asyncDelay } from '../../src/rx/Utils'
 
 describe('RXSubject Module', () => {
   test('0. default state', () => {
@@ -28,10 +28,11 @@ describe('RXSubject Module', () => {
 
   test('1. publishing', () => {
     const sb = new RXSubject(0)
-    let v = 0
+    let v = -1
     sb.pipe()
       .onReceive(value => (v = value))
       .subscribe()
+      
     expect(v).toBe(0)
 
     sb.send(1)
@@ -90,6 +91,25 @@ describe('RXSubject Module', () => {
     expect(v2).toBe('12K')
   })
 
+  test('3_2. map', () => {
+    const rx = new RXEmitter<string, never>()
+    let buffer = ''
+
+    rx.pipe()
+      .map(v => v.toUpperCase())
+      .map(v => v ? v : '-')
+      .onReceive(v => buffer += v)
+      .subscribe()
+
+    expect(buffer).toBe('')
+
+    rx.send('a')
+    rx.send('b')
+    rx.send('')
+    rx.send('c')
+    expect(buffer).toBe('AB-C')
+  })
+
   test('4. skipFirst', () => {
     const sb = new RXSubject(0)
     let buffer = ''
@@ -111,7 +131,7 @@ describe('RXSubject Module', () => {
     expect(buffer).toBe('2')
   })
 
-  test('5. debounce', async() => {
+  test('5. debounce', async () => {
     const sb = new RXSubject(1)
     let buffer1 = ''
     let buffer2 = ''
@@ -173,9 +193,9 @@ describe('RXSubject Module', () => {
   })
 
   test('7. filter', () => {
-    const sb = new RXSubject(0)
+    const rx = new RXSubject(0)
     let buffer = ''
-    sb.pipe()
+    rx.pipe()
       .removeDuplicates()
       .filter(v => v % 2 === 0)
       .map(v => v + '')
@@ -183,48 +203,48 @@ describe('RXSubject Module', () => {
       .onReceive(v => (buffer += v))
       .subscribe()
 
-    sb.send(0)
-    sb.send(0)
-    sb.send(1)
-    sb.send(1)
-    sb.send(2)
-    sb.send(3)
-    sb.send(4)
-    sb.send(5)
-    sb.send(6)
-    sb.send(7)
-    sb.send(8)
-    sb.send(9)
-    sb.send(10)
-    sb.send(11)
-    sb.send(12)
+    rx.send(0)
+    rx.send(0)
+    rx.send(1)
+    rx.send(1)
+    rx.send(2)
+    rx.send(3)
+    rx.send(4)
+    rx.send(5)
+    rx.send(6)
+    rx.send(7)
+    rx.send(8)
+    rx.send(9)
+    rx.send(10)
+    rx.send(11)
+    rx.send(12)
 
     expect(buffer).toBe('02468')
   })
 
   test('8. skipNullable', () => {
-    const sb = new RXSubject<number | undefined | null, never>(0)
+    const rx = new RXSubject<number | undefined | null, never>(0)
     let buffer = ''
-    sb.pipe()
+    rx.pipe()
       .removeDuplicates()
       .skipNullable()
       .map(v => v + '')
-      .onReceive(v => (buffer += v))
+      .onReceive(v => buffer += v)
       .subscribe()
 
-    sb.send(0)
-    sb.send(1)
-    sb.send(undefined)
-    sb.send(2)
-    sb.send(3)
-    sb.send(null)
-    sb.send(4)
-    sb.send(5)
+    rx.send(0)
+    rx.send(1)
+    rx.send(undefined)
+    rx.send(2)
+    rx.send(3)
+    rx.send(null)
+    rx.send(4)
+    rx.send(5)
 
     expect(buffer).toBe('012345')
   })
 
-  test('9. two pipes', async() => {
+  test('9. two pipes', async () => {
     const sb = new RXSubject<number, never>(-2)
     let buffer1 = ''
     let buffer2 = ''
@@ -263,7 +283,7 @@ describe('RXSubject Module', () => {
     expect(buffer2).toBe('0-2-2-4-')
   })
 
-  test('10. notification after complete', async() => {
+  test('10. notification after complete', async () => {
     const sb = new RXSubject<number, never>(-2)
     let buffer1 = ''
     let buffer2 = ''
@@ -322,7 +342,7 @@ describe('RXSubject Module', () => {
     expect(isPipe4Complete).toBe(1)
   })
 
-  test('11. rejection', async() => {
+  test('11. rejection', async () => {
     const sb = new RXSubject<number, string>(0)
     let buffer1 = ''
     let buffer2 = ''

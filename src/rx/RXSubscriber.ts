@@ -57,7 +57,7 @@ export class RXSubscriber<V, E> implements RXSender<V, E> {
   }
 
   onReceive(f: (v: any) => void): ErrorMethod<E> & CompleteMethod & SubscribeMethod {
-    if (this.isComplete) throw new Error('RXSubscriber is complete: It can update onReceiveCallback')
+    if (this.isComplete) throw new Error('RXSubscriber is complete: It can not update onReceiveCallback')
     else if (this.isSubscribed) throw new Error('RXSubscriber can not update onReceiveCallback: subscribe() is already evoked')
 
     this.onReceiveCallback = f

@@ -1,4 +1,4 @@
-import {describe, expect, test} from '@jest/globals'
+import { describe, expect, test } from '@jest/globals'
 import {
   RXDelayedComplete,
   RXEmitter,
@@ -7,8 +7,8 @@ import {
   RXOperation,
   RXSubject
 } from '../../src/rx/RXPublisher'
-import {RX} from '../../src/rx/RX'
-import {asyncDelay} from '../../src/rx/Utils'
+import { RX } from '../../src/rx/RX'
+import { asyncDelay } from '../../src/rx/Utils'
 
 describe('RxOperation Module', () => {
   test('0. default state', () => {
@@ -105,7 +105,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('10c')
   })
 
-  test('3. parallel complete of timers', async() => {
+  test('3. parallel complete of timers', async () => {
     let buffer = ''
     const runTimer = (id: string) => {
       setTimeout(() => {
@@ -122,7 +122,7 @@ describe('RxOperation Module', () => {
     expect(buffer).toBe('abcdef')
   })
 
-  test('4. debounce', async() => {
+  test('4. debounce', async () => {
     const op = new RXOperation<number, void>()
     let buffer1 = ''
     let buffer2 = ''
@@ -154,7 +154,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('10c')
   })
 
-  test('5. replaceWith', async() => {
+  test('5. replaceWith', async () => {
     const op = new RXOperation<string, string>()
     let buffer1 = ''
     let buffer2 = ''
@@ -193,7 +193,7 @@ describe('RxOperation Module', () => {
     expect(buffer3).toBe('*c')
   })
 
-  test('6. void result', async() => {
+  test('6. void result', async () => {
     const op = new RXOperation<void, void>()
     let buffer1 = ''
     let buffer2 = ''
@@ -225,7 +225,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('vc')
   })
 
-  test('7. combine list of publishers', async() => {
+  test('7. combine list of publishers', async () => {
     const op1 = new RXSubject<number, void>(0)
     const op2 = new RXOperation<string, void>()
     const op3 = new RXOperation<string, void>()
@@ -285,7 +285,7 @@ describe('RxOperation Module', () => {
     expect(buffer).toBe('2xyc')
   })
 
-  test('8. RXObservableValue', async() => {
+  test('8. RXObservableValue', async () => {
     let buffer = ''
     const $ob = new RXObservableValue(1)
     $ob.pipe()
@@ -295,11 +295,12 @@ describe('RxOperation Module', () => {
     expect(buffer).toBe('1')
 
     $ob.value = 2
-    await asyncDelay(10)
-    expect(buffer).toBe('12')
+    $ob.value = 3
+
+    expect(buffer).toBe('123')
   })
 
-  test('9. wait until list of publishers complete', async() => {
+  test('9. wait until list of publishers complete', async () => {
     const op1 = RX.justComplete<boolean, any>(false)
     const op2 = new RXSubject<number, any>(0)
     const op3 = new RXOperation<string, any>()
@@ -346,7 +347,7 @@ describe('RxOperation Module', () => {
     expect(buffer).toBe('2c2c')
   })
 
-  test('10. wait until list of publishers complete without resul', async() => {
+  test('10. wait until list of publishers complete without result', async () => {
     const op1 = RX.justComplete<boolean, any>(false)
     const op2 = new RXSubject<number, any>(0)
     const op3 = new RXOperation<string, any>()
@@ -385,7 +386,7 @@ describe('RxOperation Module', () => {
     expect(buffer).toBe('cc')
   })
 
-  test('11. just complete', async() => {
+  test('11. just complete', async () => {
     const op = RX.justComplete(200)
     expect(op.isComplete).toBe(true)
 
@@ -413,7 +414,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('200c')
   })
 
-  test('12. just only complete', async() => {
+  test('12. just only complete', async () => {
     const op = RX.justComplete()
     expect(op.isComplete).toBe(true)
 
@@ -441,7 +442,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('c')
   })
 
-  test('13. delayed complete', async() => {
+  test('13. delayed complete', async () => {
     const op = RX.delayedComplete(10, 'v')
     expect(op.isComplete).toBe(false)
 
@@ -479,7 +480,7 @@ describe('RxOperation Module', () => {
     expect(buffer1).toBe('vc')
   })
 
-  test('14. just error', async() => {
+  test('14. just error', async () => {
     const op = RX.justError(400)
     expect(op.isComplete).toBe(true)
 
@@ -507,7 +508,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('400c')
   })
 
-  test('15. spread', async() => {
+  test('15. spread', async () => {
     const op1 = new RXOperation<string[], void>()
     let buffer1 = ''
     op1.pipe()
@@ -534,7 +535,31 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('200-c')
   })
 
-  test('16. flatMap', async() => {
+  test('16. flatMap', async () => {
+    class Task {
+      readonly $isDone = new RXObservableValue(false)
+    }
+
+    const task = new Task()
+    const $selectedTask = new RXObservableValue<Task | undefined>(undefined)
+    let buffer = ''
+
+    $selectedTask.pipe()
+      .skipNullable()
+      .flatMap(t => t.$isDone)
+      .onReceive(isDone => buffer = isDone + '')
+      .subscribe()
+
+    expect(buffer).toBe('') // no submission: selectedTask is undefined
+
+    $selectedTask.value = task
+    expect(buffer).toBe('false') // buffer is updated with default value false
+
+    task.$isDone.value = true
+    expect(buffer).toBe('true') // buffer is updated with value true
+  })
+
+  test('16_2. flatMap', async () => {
     const pow = (v: number): RXObservable<number, void> => {
       const e = new RXEmitter<number, void>()
       setTimeout(() => {
@@ -599,7 +624,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('0-1-4c')
   })
 
-  test('17. flatMap after complete', async() => {
+  test('17. flatMap after complete', async () => {
     const subject = new RXSubject<number, void>(0)
     let buffer1 = ''
     let buffer2 = ''
@@ -639,7 +664,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('c')
   })
 
-  test('18. from', async() => {
+  test('18. from', async () => {
     const op = RX.from([0, 1, 2])
     expect(op.isComplete).toBe(true)
 
@@ -661,7 +686,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('2-c')
   })
 
-  test('19. sequent', async() => {
+  test('19. sequent', async () => {
     const op = RX.from([0, 1, 2, 3])
     expect(op.isComplete).toBe(true)
 
@@ -690,7 +715,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('0-1-4-9-c')
   })
 
-  test('20. sequent with error', async() => {
+  test('20. sequent with error', async () => {
     const op = RX.from([0, 1, 2, 3])
     expect(op.isComplete).toBe(true)
 
@@ -722,7 +747,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('1-9-c')
   })
 
-  test('21. parallel', async() => {
+  test('21. parallel', async () => {
     const op = RX.from([0, 30, 10, 20])
     expect(op.isComplete).toBe(true)
 
@@ -751,7 +776,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('0-10-20-30-c')
   })
 
-  test('21. queue', async() => {
+  test('21. queue', async () => {
     let buffer1 = ''
     const q = RX.queue<string, Error>()
 
@@ -788,7 +813,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('1abc')
   })
 
-  test('22. queue - procedure style', async() => {
+  test('22. queue - procedure style', async () => {
     let buffer1 = ''
     let buffer2 = ''
     const q = RX.queue<string, Error>()
@@ -822,7 +847,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('123')
   })
 
-  test('23. queue with error', async() => {
+  test('23. queue with error', async () => {
     let buffer1 = ''
     const q = RX.queue<string, Error>()
 
@@ -859,7 +884,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('ec')
   })
 
-  test('24. forEach', async() => {
+  test('24. forEach', async () => {
     const op = RX.from([0, 1, 2, 3])
     expect(op.isComplete).toBe(true)
 
@@ -888,7 +913,7 @@ describe('RxOperation Module', () => {
     expect(buffer2).toBe('0-1-4-9-c')
   })
 
-  test('25. forEach with error', async() => {
+  test('25. forEach with error', async () => {
     const op = RX.from([0, 1, 2, 3])
     expect(op.isComplete).toBe(true)
 

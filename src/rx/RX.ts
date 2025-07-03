@@ -27,10 +27,6 @@ export interface RXSender<V, E> {
 }
 
 export class RX {
-  //--------------------------------------
-  //  STATIC METHODS
-  //--------------------------------------
-
   static combine(...list: Array<AnyRXObservable | RXAnyOperatorProtocol>): RXObservable<any[], any> {
     return new RXCombine(list).asObservable
   }
