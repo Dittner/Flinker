@@ -51,9 +51,9 @@ let buffer1 = ''
 let buffer2 = ''
 
 op.pipe()
-  .onReceive(v => (buffer1 += v + ''))
-  .onError(() => (buffer1 += 'e'))
-  .onComplete(() => (buffer1 += 'c'))
+  .onReceive(v => buffer1 += v + '')
+  .onError(() => buffer1 += 'e')
+  .onComplete(() => buffer1 += 'c')
   .subscribe()
 
 op.fail()
@@ -62,9 +62,9 @@ op.success(10) // no effect
 op.success(20) // no effect
 
 op.pipe()
-  .onReceive(value => (buffer2 += value + ''))
-  .onError(() => (buffer2 += 'e'))
-  .onComplete(() => (buffer2 += 'c'))
+  .onReceive(value => buffer2 += value + '')
+  .onError(() => buffer2 += 'e')
+  .onComplete(() => buffer2 += 'c')
   .subscribe()
 
 expect(buffer1).toBe('ec') // true
