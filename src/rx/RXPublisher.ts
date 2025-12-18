@@ -1,6 +1,6 @@
-import {type RXAnyOperatorProtocol, type RXOperatorProtocol} from './RXOperator'
-import {type RXAnyPipeline, RXPipeline} from './RXPipeline'
-import {type RXObject, type RXObjectType} from './RX'
+import { type RXAnyOperatorProtocol, type RXOperatorProtocol } from './RXOperator'
+import { type RXAnyPipeline, RXPipeline } from './RXPipeline'
+import { type RXObject, type RXObjectType } from './RX'
 
 export type SessionUID = number
 const generateSUID = (() => {
@@ -37,6 +37,13 @@ export class RXPublisher<V, E> implements RXObservable<V, E> {
 
   get volume() { return this.pipelines.length }
   get asObservable(): RXObservable<V, E> { return this }
+  get asAwaitable(): Promise<V> {
+    return new Promise<V>((resolve, reject) => {
+      this.pipe()
+        .onReceive(v => resolve(v))
+        .onError(e => reject(e))
+    })
+  }
 
   protected _isComplete = false
   get isComplete(): boolean { return this._isComplete }
@@ -46,6 +53,8 @@ export class RXPublisher<V, E> implements RXObservable<V, E> {
     this.pipelines.push(pipe)
     return pipe.asOperator
   }
+
+
 
   didSubscribe(p: RXAnyPipeline) {
     this.isComplete && p.sendComplete(false)
