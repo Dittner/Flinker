@@ -37,13 +37,6 @@ export class RXPublisher<V, E> implements RXObservable<V, E> {
 
   get volume() { return this.pipelines.length }
   get asObservable(): RXObservable<V, E> { return this }
-  get asAwaitable(): Promise<V> {
-    return new Promise<V>((resolve, reject) => {
-      this.pipe()
-        .onReceive(v => resolve(v))
-        .onError(e => reject(e))
-    })
-  }
 
   protected _isComplete = false
   get isComplete(): boolean { return this._isComplete }
@@ -344,6 +337,14 @@ export class RXOperation<V, E> extends RXPublisher<V, E> {
     this._hasError = true
     super.sendError(e)
     super.sendComplete()
+  }
+
+  get asAwaitable(): Promise<V> {
+    return new Promise<V>((resolve, reject) => {
+      this.pipe()
+        .onReceive(v => resolve(v))
+        .onError(e => reject(e))
+    })
   }
 
   didSubscribe(p: RXAnyPipeline) {
