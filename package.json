@@ -1,7 +1,7 @@
 {
   "name": "flinker",
   "description": "RX.ts lib for building frontend apps",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dittner/Flinker.git"
